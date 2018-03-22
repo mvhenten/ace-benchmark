@@ -10,10 +10,13 @@
   <div style="height:960px; width: 600px" id="editor"></div>
 
   <script type="text/javascript">
+      var variety = document.location.search.replace(/.+\=/, "") || "ace";
+  
+  
       var require = {
           baseUrl: window.location.protocol + "//" + window.location.host + window.location.pathname.split("/").slice(0, -1).join("/"),
           paths: {
-              ace: "ace/lib/ace"
+              ace: variety + "/lib/ace"
           },
           waitSeconds: 30
       };

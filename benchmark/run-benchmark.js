@@ -44,7 +44,7 @@ define(function(require, exports, module) {
             session.setScrollTop(0);
             
             return new Promise(function(resolve){
-                setTimeout(resolve, 100);
+                setTimeout(resolve, 1000);
             });
         }
 
@@ -53,12 +53,18 @@ define(function(require, exports, module) {
             let session = this.editor.session;
             let top = -1;
 
+            session.$scrollTop = -1;
+            renderer.scrollTop = -1;
+            session.setScrollTop(0);
+
             return new Promise(function(resolve, reject) {
                 renderer.on("afterRender", handler);
 
                 function handler() {
-                    if (renderer.scrollTop > max)
+                    if (renderer.scrollTop > max) {
+                        renderer.off("afterRender", handler);
                         return resolve();
+                    }
 
                     top = renderer.scrollTop;
 
@@ -88,16 +94,16 @@ define(function(require, exports, module) {
     var bench = new Benchmark(editor);
 
     const init = async() => {
+        console.log("init benchmark");
         for (let benchmark of benchmarks) {
             await bench.reset();
 
             let start = window.performance.now();
-            console.profile(benchmark.name);
+            // console.profile(benchmark.name);
             await bench.run(benchmark.scrollBy, benchmark.max);
-            console.profileEnd();
+            // console.profileEnd();
             let end = window.performance.now();
             console.log("Done: %s %s", end - start, benchmark.name);
-            await bench.reset();
         }
     };
 
