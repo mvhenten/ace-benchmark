@@ -34,15 +34,24 @@ define(function(require, exports, module) {
         constructor(editor) {
             this.editor = editor;
         }
+        
+        reset() {
+            let renderer = this.editor.renderer;
+            let session = this.editor.session;
+
+            session.$scrollTop = -1;
+            renderer.scrollTop = -1;
+            session.setScrollTop(0);
+            
+            return new Promise(function(resolve){
+                setTimeout(resolve, 100);
+            });
+        }
 
         run(scrollBy, max = Math.Infinity) {
             let renderer = this.editor.renderer;
             let session = this.editor.session;
             let top = -1;
-
-            session.$scrollTop = -1;
-            renderer.scrollTop = -1;
-            session.setScrollTop(0);
 
             return new Promise(function(resolve, reject) {
                 renderer.on("afterRender", handler);
@@ -70,6 +79,8 @@ define(function(require, exports, module) {
         var values = Array(100).fill(ace.edit.toString());
 
         editor.setValue(values.join("\n"));
+        editor.renderer.setShowGutter(false);
+
         return editor;
     }
 
@@ -78,10 +89,7 @@ define(function(require, exports, module) {
 
     const init = async() => {
         for (let benchmark of benchmarks) {
-            let el = document.querySelector("#editor");
-
-            el.style.width = `${benchmark.width}px`;
-            el.style.height = `${benchmark.height}px`;
+            await bench.reset();
 
             let start = window.performance.now();
             console.profile(benchmark.name);
@@ -89,8 +97,9 @@ define(function(require, exports, module) {
             console.profileEnd();
             let end = window.performance.now();
             console.log("Done: %s %s", end - start, benchmark.name);
+            await bench.reset();
         }
     };
 
-    init();
+    setTimeout(init, 3000);
 });
