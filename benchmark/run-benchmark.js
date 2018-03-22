@@ -1,12 +1,17 @@
 const benchmarks = [
     {
+        name: "scrolling 400x800 2px/tick",
+        scrollBy: 2,
+        max: 1000,
+        width: 600,
+        height: 960
+    },
+    {
         name: "scrolling 400x800 25px/tick",
         scrollBy: 25,
         max: 5000,
         width: 600,
         height: 960
-
-
     },
     {
         name: "scrolling 400x800 50px/tick",
@@ -22,8 +27,6 @@ const benchmarks = [
         width: 600,
         height: 960
     }
-
-
 ];
 
 define(function(require, exports, module) {
@@ -108,4 +111,6 @@ define(function(require, exports, module) {
     };
 
     setTimeout(init, 3000);
+    
+    window._runAceBenchmark = () => init;
 });
